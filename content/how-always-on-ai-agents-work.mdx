@@ -1,0 +1,136 @@
+---
+title: "How Always-On AI Agents Work Under the Hood"
+publishedAt: "2026-10-13"
+author: "Manav Panchal"
+summary: "A look at the architecture behind always-on AI agents: event triggers, isolated compute, durable workflows, sub-agents, and context engineering."
+---
+
+Most AI agents today work in a pretty straightforward way. You give them a task, they call some tools, execute commands, and return a result.
+
+But what if we want an agent to keep working after we close our laptop? Or pick up where it left off if the process crashes?
+
+That's where always-on agents come in.
+
+The interesting part isn't really the LLM. It's how we design the infrastructure around it to handle long-running tasks, failures, memory, and execution.
+
+## 1. Architecture
+
+At a high level, an always-on agent has three main components:
+
+**Triggers → Agent Server → Cloud Computer**
+
+The triggers could be anything: a Slack message, an email, a webhook, or a scheduled job.
+
+These events reach the agent server, where the actual LLM tool-calling loop runs.
+
+The server manages incoming messages, conversation history, tool execution, and persistent state. It can also decide which tasks should run immediately and which can wait.
+
+The cloud computer is where the agent does the actual work, such as running shell commands, browsing websites, or modifying files.
+
+One interesting design decision is keeping the **agent server separate from the execution environment**.
+
+For example, we could use Firecracker microVMs to give agents isolated Linux environments. These machines can be snapshotted, shut down, and restored when required.
+
+So the VM doesn't need to run all the time. The agent server can wake it up whenever there's work.
+
+This also means we can rebuild or replace the VM without losing the agent's conversation history or orchestration state.
+
+**[Excalidraw: Triggers → Event Router / Queue → Agent Server → Firecracker VM, with persistent storage connected to the server]**
+
+## 2. Why a Simple Job Queue Isn't Enough
+
+Let's say we have an agent that needs to:
+
+1. Clone a GitHub repository.
+2. Find a bug.
+3. Fix the code.
+4. Run tests.
+5. Create a pull request.
+
+What if the worker crashes while running the tests?
+
+With a basic queue implementation, we might end up restarting the entire job unless we've built our own mechanism to track completed steps.
+
+That's not ideal when the agent has already spent 20 minutes working.
+
+This is where something like **Temporal** becomes useful.
+
+Instead of treating the whole task as a single job, we can use a durable workflow to track its execution.
+
+If a worker crashes, Temporal can recover the workflow and continue from its persisted state. We still need to handle idempotency for external operations, but we don't have to rebuild the entire recovery mechanism ourselves.
+
+For agents expected to run for hours or even days, this becomes important.
+
+## 3. Keeping the Main Agent Lightweight
+
+Another problem is context.
+
+Imagine an agent debugging an application. It reads 30 files, executes 50 shell commands, and processes thousands of lines of logs.
+
+If we keep adding all of that to the main agent's conversation, we'll eventually fill its context window.
+
+One approach is to delegate these operations to sub-agents.
+
+The main agent manages the task, while smaller agents handle things like code analysis, browsing, or research.
+
+Each sub-agent gets its own context and returns only the relevant findings.
+
+This way, the main agent doesn't need to know every command that was executed.
+
+There's a similar optimization for tools.
+
+If our agent has access to 100 tools through different MCP servers, loading every tool schema into the prompt wastes context.
+
+Instead, we can use **dynamic tool discovery**, where the agent retrieves the tool definitions it needs at runtime.
+
+Less unnecessary context means fewer tokens and usually lower costs.
+
+## 4. Context Engineering and Memory
+
+Even with sub-agents, the main agent's conversation will keep growing.
+
+For an agent that runs over several days, we need a way to manage that history.
+
+A few techniques help here.
+
+**Prompt caching:** Keep system prompts and tool definitions as stable as possible between requests. This lets supported model providers reuse cached prompt prefixes instead of processing everything from scratch.
+
+**Compaction:** When conversations become too large, summarize older messages while preserving important decisions, completed work, and pending tasks.
+
+**File-based memory:** Instead of putting everything into the prompt, store information in files. The agent can search these files whenever it needs something.
+
+For example, we could maintain a few Markdown files containing user preferences, previous task logs, and reusable instructions.
+
+The agent doesn't need all this information in every request. It just needs a way to retrieve the right information when required.
+
+Compaction is probably one of the harder problems here because every summary loses some information. If we accidentally remove an important decision, the agent could make mistakes later.
+
+## 5. Security and Reliability
+
+Giving an agent access to a Linux machine, browser, and external APIs is powerful, but it also creates security problems.
+
+For instance, the agent might read a malicious instruction inside a webpage or email and mistake it for an actual user instruction.
+
+We need to treat external content as untrusted.
+
+We can also introduce an automated review step for risky tool calls and require user approval for irreversible actions, such as sending emails or deploying changes.
+
+On the infrastructure side, isolation, retries, idempotency, and observability become just as important as the agent's reasoning capabilities.
+
+## Final Thoughts
+
+What I find interesting about always-on agents is how much of their architecture comes down to problems we've already been solving in backend engineering.
+
+Queues, durable workflows, state persistence, isolated compute, retries, and caching.
+
+The LLM is still doing the same basic thing: reasoning and calling tools in a loop.
+
+What changes is the system around it.
+
+**An always-on agent doesn't mean an LLM is running 24/7. It means the system can wake the agent when needed, preserve its work, and recover when something goes wrong.**
+
+That's the part worth understanding if you're building agents meant to do more than complete a single prompt.
+
+---
+
+Reference: [How Always-On Agents Work](https://www.youtube.com/watch?v=L1OBRtfPS34)
