@@ -19,7 +19,9 @@ function ProjectImage({ src, alt }: { src: string; alt: string }) {
     <img
       src={src}
       alt={alt}
-      className="w-full h-48 object-cover"
+      className="w-full h-48 object-contain bg-[#111111]"
+      loading="lazy"
+      decoding="async"
       onError={() => setImageError(true)}
     />
   );
@@ -78,7 +80,7 @@ export function ProjectCard({
               className="w-full h-48 object-cover"
             />
           ) : image ? (
-            <ProjectImage src={image} alt={title} />
+            <ProjectImage src={image} alt={`${title} project preview`} />
           ) : (
             <div className="w-full h-48 bg-muted" />
           )}

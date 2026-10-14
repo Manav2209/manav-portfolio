@@ -17,9 +17,9 @@ export const DATA = {
   location: "Ahmedabad, India",
   locationLink: "https://www.google.com/maps/place/Ahmedabad/",
   description:
-    "Full Stack Software Engineer building AI agents, developer tools, and backend systems. Interested in distributed systems and making software reliable at scale.",
+    "Software engineer turning ideas into AI tools and real-time applications.",
   summary:
-    "I'm a Computer Engineering graduate from Silver Oak University in Ahmedabad. I enjoy building products end-to-end, but I'm especially interested in what happens behind the UI: orchestration, backend architecture, reliability, and deployment. I've worked on consent-management systems and fintech products, and lately I've been building [Lovable-v0](https://github.com/Manav2209/lovable-v0), a prompt-to-app coding agent with isolated Kubernetes sandboxes, and [AI Interviewer](https://github.com/Manav2209/ai-interviewer), a repository-aware voice interviewer. I like learning by building real systems, finding their failure modes, and improving them. You can explore more of my [work here](https://dub.sh/IsNfI4r).",
+    "I'm a software engineer who likes to get under the hood: figuring out how systems work, where they break, and how to make them reliable.",
   avatarUrl: "https://github.com/Manav2209.png",
   skills: [
     { name: "React", icon: ReactLight },
@@ -133,7 +133,7 @@ export const DATA = {
       links: [
         { type: "Source", href: "https://github.com/Manav2209/lovable-v0", icon: <Icons.github className="size-3" /> },
       ],
-      image: "",
+      image: "/projects/lovable-architecture.png",
       video: "",
     },
     {
@@ -147,22 +147,22 @@ export const DATA = {
       links: [
         { type: "Source", href: "https://github.com/Manav2209/ai-interviewer", icon: <Icons.github className="size-3" /> },
       ],
-      image: "",
+      image: "/projects/ai-interviewer-architecture.png",
       video: "",
     },
     {
-      title: "Ryde",
-      href: "https://github.com/Manav2209/ryde",
-      dates: "2025",
-      active: false,
+      title: "MeetMind",
+      href: "https://github.com/Manav2209/Meet-AI",
+      dates: "2026",
+      active: true,
       description:
-        "A full-stack ride-sharing mobile app built with Expo and React Native. Includes authentication with Clerk, ride booking flows, Google Maps integration, and PostgreSQL-backed data management.",
-      technologies: ["React Native", "Expo", "TypeScript", "Clerk", "Google Maps", "PostgreSQL", "Prisma", "NativeWind"],
+        "An AI meeting assistant that joins Google Meet calls, records meetings, and turns them into transcripts, summaries, and searchable knowledge. Built a Redis-driven worker pipeline for containerized recording, audio extraction, Whisper transcription, Gemini summaries, and Qdrant-backed chat across meetings.",
+      technologies: ["Next.js", "TypeScript", "Node.js", "Express.js", "Redis", "Docker", "PostgreSQL", "Prisma", "Whisper", "Gemini", "Qdrant", "FFmpeg"],
       links: [
-        { type: "Source", href: "https://github.com/Manav2209/ryde", icon: <Icons.github className="size-3" /> },
-        { type: "Demo", href: "https://drive.google.com/file/d/1z2UAYjR0nytKmzES5BmKeieWR4sJ4ihv/view?usp=drive_link", icon: <Icons.globe className="size-3" /> },
+        { type: "Source", href: "https://github.com/Manav2209/Meet-AI", icon: <Icons.github className="size-3" /> },
+        { type: "Demo", href: "https://drive.google.com/file/d/1it1QW1wrUIzzBNSa5ng4rWWzQMZ07lZ7/view", icon: <Icons.globe className="size-3" /> },
       ],
-      image: "",
+      image: "/projects/meetmind-architecture.png",
       video: "",
     },
     {
@@ -176,7 +176,7 @@ export const DATA = {
       links: [
         { type: "Source", href: "https://github.com/Manav2209/golang-predix", icon: <Icons.github className="size-3" /> },
       ],
-      image: "",
+      image: "/projects/predix-architecture.png",
       video: "",
     },
     {
@@ -191,7 +191,22 @@ export const DATA = {
         { type: "Source", href: "https://github.com/Manav2209/exness", icon: <Icons.github className="size-3" /> },
         { type: "Demo", href: "https://drive.google.com/file/d/1TCOLTwsV2FcAa7A5B0qpGSJNd5SnpB-c/view?usp=drive_link", icon: <Icons.globe className="size-3" /> },
       ],
-      image: "",
+      image: "/projects/exness-dashboard.jpg",
+      video: "",
+    },
+    {
+      title: "Ryde",
+      href: "https://github.com/Manav2209/ryde",
+      dates: "2025",
+      active: false,
+      description:
+        "A full-stack ride-sharing mobile app built with Expo and React Native. Includes authentication with Clerk, ride booking flows, Google Maps integration, and PostgreSQL-backed data management.",
+      technologies: ["React Native", "Expo", "TypeScript", "Clerk", "Google Maps", "PostgreSQL", "Prisma", "NativeWind"],
+      links: [
+        { type: "Source", href: "https://github.com/Manav2209/ryde", icon: <Icons.github className="size-3" /> },
+        { type: "Demo", href: "https://drive.google.com/file/d/1z2UAYjR0nytKmzES5BmKeieWR4sJ4ihv/view?usp=drive_link", icon: <Icons.globe className="size-3" /> },
+      ],
+      image: "/projects/ryde-preview.png",
       video: "",
     }
   ],
